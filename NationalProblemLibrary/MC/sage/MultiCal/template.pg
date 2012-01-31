@@ -1,0 +1,110 @@
+## BEGIN_DESCRIPTION
+## Template for calling Sage from within a WebWork pg file
+## END_DESCRIPTION
+
+## KEYWORDS('sage', 'sagelet', 'blah', 'blah')
+
+## DBsubject(' ')
+## DBchapter(' ')
+## DBsection(' ')
+## Date('January 2012')
+## Author('John Travis')
+## Institution('Mississippi College')
+## TitleText1(' ')
+## EditionText1(' ')
+## AuthorText1(' ')
+## Section1(' ')
+## Problem1(' ')
+
+DOCUMENT();
+
+loadMacros(
+"PGstandard.pl",
+"PGchoicemacros.pl",
+"MathObjects.pl",
+);
+
+TEXT(beginproblem());
+
+# Regular WebWork setup
+
+$ex=random(25/10,55/10,1/2);
+$fin = "x^{$ex}";
+$funct  = Compute($fin);
+$funct_diff = $funct->D('x');
+
+# Below is a placeholder for the return value from the sagelet.  Making certain contest is right.
+$fp = $funct_diff - $funct_diff;
+
+TEXT(<<SAGE_CODE);
+<div id="singlecell-test"><script type="text/code">
+
+# Example Sage Python
+
+x = var("x",domain=QQ)
+
+~~@interact
+def _(f = ($funct.simplify())):
+    df = diff(f,x,1)
+    html("\[ %s \]"%str(latex(f)) )
+    print " "
+    html("\[ f \' (x) = %s \]"%str(latex(df)) )
+
+</script></div>
+
+SAGE_CODE
+
+TEXT(<<SAGE_SCRIPT);
+
+<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery-1.5.min.js"></script>
+<script type="text/javascript" src="http://aleph.sagemath.org/embedded_singlecell.js"></script>
+<script type="text/javascript">
+
+~~$(function() { // load only when the page is loaded
+  var makecells = function() {
+  singlecell.makeSinglecell({
+      inputLocation: "~~#singlecell-test",
+      editor: "codemirror",
+      hide: ["editor","computationID","files","messages","sageMode"],
+      evalButtonText: "Start/Restart",
+      replaceOutput: true});
+  }
+
+  singlecell.init(makecells); // load Single Cell libraries and then
+                              // initialize Single Cell instances
+
+  });
+</script>
+
+<script type="text/javascript">
+function displayResult()
+{
+  var ~~$fp=document.getElementById("hidden1").df;
+  alert(x);
+}
+</script>
+
+SAGE_SCRIPT
+
+
+# Continue pg file as normal
+
+BEGIN_TEXT
+$BBOLD
+To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has problems which don't allow the interactive cell to function but IE9 appears to work.
+$EBOLD
+
+$PAR
+Using Sage above, determine the derivative of \[ f(x) = $fin \]
+$PAR
+\(f '(x) = \) \{ ans_rule(20) \}
+$PAR
+(This homework problem was a simple first test to get things working right.  Plans are to convert it to something related to partial differentiation where the computer takes the derivatives, factors them and the student then lists all critical points.  Something where there may be six or so critical points with a couple x's and three y's.)
+END_TEXT
+
+Context()->normalStrings;
+
+ANS($fp->cmp() );
+
+
+ENDDOCUMENT();       
