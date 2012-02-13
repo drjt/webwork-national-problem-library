@@ -24,6 +24,7 @@ loadMacros(
 "PGcourse.pl",
 # "PGchoicemacros.pl",
 "MathObjects.pl",
+"problemRandomize.pl",
 
 # "parserVectorUtils.pl",
 );
@@ -32,6 +33,8 @@ Context("Numeric");
 Context()->variables->add(y=>'Real');
 
 TEXT(beginproblem());
+
+ProblemRandomize(when=>"Correct",onlyAfterDue=>0);
 
 Context('Vector');
 
@@ -52,7 +55,7 @@ $v_exact = Vector("<$mx,$my>");
 # $v_exact = Vector("<$mx,$my>");
 
 
-TEXT(<<SAGE_CODE);
+TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
 <div id="singlecell-test">
 <script type="text/code">
@@ -78,15 +81,15 @@ def _(  x0 = input_box(0,width=5,label='\(x_0\)'),
 
 SAGE_CODE
 
-TEXT(<<'SAGE_SCRIPT');
+TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery-1.5.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_singlecell.js"></script>
+<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 <script type="text/javascript">
 
 $(function() { // load only when the page is loaded
   var makecells = function() {
-  singlecell.makeSinglecell({
+  sagecell.makeSagecell({
       inputLocation: "#singlecell-test",
       editor: "codemirror",
       hide: ["editor","computationID","files","messages","sageMode"],
@@ -94,7 +97,7 @@ $(function() { // load only when the page is loaded
       replaceOutput: true});
   }
 
-  singlecell.init(makecells); // load Single Cell libraries and then
+  sagecell.init(makecells); // load Single Cell libraries and then
                               // initialize Single Cell instances
 
   });

@@ -36,7 +36,8 @@ $funct_diff = $funct->D('x');
 # Below is a placeholder for the return value from the sagelet.  Making certain contest is right.
 $fp = $funct_diff - $funct_diff;
 
-TEXT(<<SAGE_CODE);
+TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
+
 <div id="singlecell-test"><script type="text/code">
 
 # Example Sage Python
@@ -54,34 +55,26 @@ def _(f = ($funct.simplify())):
 
 SAGE_CODE
 
-TEXT(<<SAGE_SCRIPT);
+TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery-1.5.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_singlecell.js"></script>
+<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 <script type="text/javascript">
 
-~~$(function() { // load only when the page is loaded
+$(function() { // load only when the page is loaded
   var makecells = function() {
-  singlecell.makeSinglecell({
-      inputLocation: "~~#singlecell-test",
+  sagecell.makeSagecell({
+      inputLocation: "#singlecell-test",
       editor: "codemirror",
       hide: ["editor","computationID","files","messages","sageMode"],
       evalButtonText: "Start/Restart",
       replaceOutput: true});
   }
 
-  singlecell.init(makecells); // load Single Cell libraries and then
+  sagecell.init(makecells); // load Single Cell libraries and then
                               // initialize Single Cell instances
 
   });
-</script>
-
-<script type="text/javascript">
-function displayResult()
-{
-  var ~~$fp=document.getElementById("hidden1").df;
-  alert(x);
-}
 </script>
 
 SAGE_SCRIPT
