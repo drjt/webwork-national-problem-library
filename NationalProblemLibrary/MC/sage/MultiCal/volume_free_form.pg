@@ -1,7 +1,6 @@
 ## BEGIN_DESCRIPTION
 ## Using the Sage single cell server, determine the volume of a region
-## where the student must only determine the correct order and limits of integration.
-## This version lists the volume boundaries as independent equations with no explicit inequalities
+## where the student must only determine the correct order and limits of integration
 ## END_DESCRIPTION
 
 ## KEYWORDS('sage', 'sagelet', 'integration', 'multiple')
@@ -61,7 +60,7 @@ $showHint = 3;
 
 TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
-<div id="singlecell-test">
+<div id="sagecell">
 <script type="text/code">
  
 # Sage Python Code
@@ -82,10 +81,10 @@ def _(
     dV = selector(['dz dy dx','dz dx dy','dx dy dz','dx dz dy','dy dx dz','dy dz dx'],buttons=False,label='\({dV=}\)'),
     a1=input_box(0,label='\(a_{1}=\)',width=5),
     a2=input_box(2,label='\(a_{2}=\)',width=5),
-    b1=input_box((4-x^2),label='\(b_{1}=\)',width=10),
-    b2=input_box((4+x),label='\(b_{2}=\)',width=10),
-    c1=input_box(-x,label='\(c_{1}=\)',width=15),
-    c2=input_box(x+y,label='\(c_{2}=\)',width=15)):
+    b1=input_box(0,label='\(b_{1}=\)',width=10),
+    b2=input_box(2,label='\(b_{2}=\)',width=10),
+    c1=input_box(0,label='\(c_{1}=\)',width=15),
+    c2=input_box(2,label='\(c_{2}=\)',width=15)):
 
     b1 = b1 + 0*x
     b2 = b2 + 0*x
@@ -121,52 +120,40 @@ def _(
     I1 = '\int_{%s'%str(a1)+'}^{%s}'%str(a2)
     I2 = '\int_{%s'%str(b1)+'}^{%s}'%str(b2)
     I3 = '\int_{%s'%str(c1)+'}^{%s}'%str(c2)
-    html('<h3 align="middle">\('+I1+'\hspace{2 mm}\) \('+I2+'\hspace{4 mm}\) \('+I3+'\hspace{6 mm}\) \('+str(dV)+' = %s \)</h3>'%str(integ))
+    html('<h3 align="middle">\('+I1+'\) \('+I2+'\) \('+I3+'\) \('+str(dV)+' = %s \)</h3>'%str(integ))
 
  </script>
  </div>
 SAGE_CODE
 
-TEXT(MODES(TeX=>"", HTML=><<"SAGE_SCRIPT"));
+TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
-<script type="text/javascript">
+<script src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 
-$(function() { // load only when the page is loaded
-  var makecells = function() {
-  sagecell.makeSagecell({
-      inputLocation: "#singlecell-test",
-      editor: "codemirror",
-      hide: ["editor","computationID","files","messages","sageMode"],
-      evalButtonText: "Start/Restart",
-      replaceOutput: true});
-  }
-
-  sagecell.init(makecells); // load Single Cell libraries and then
-                              // initialize Single Cell instances
-
-  });
+<script>
+$(function () {
+   sagecell.makeSagecell({inputLocation:  '#sagecell',
+                          template:       sagecell.templates.minimal,
+                          autoeval:        true, 
+                          evalButtonText: 'Start/Restart'});
+});
 </script>
 
 SAGE_SCRIPT
 
 
 TEXT(MODES(TeX =>"",HTML=>EV3(<<'EOT')));
-$BBOLD
-To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has problems which don't allow the interactive cell to function but IE9 appears to work.
-$EBOLD
 
 $PAR
 Using the interactive tool above, determine the order of integration and endpoints that give the volume of the region bounded by:
 $BR
 $BCENTER
-\( $outvar = $outright \) ,
-\( $midvar = $midleft \) , 
-\( $outvar = $outleft \) ,
-\( $invar = $inright \) ,
-\( $midvar = $midright \) , and
-\( $invar = $inleft \) .
+\( $midvar \) between \( $midleft \) and \( $midright \)
+$BR
+\(  $outvar \) between \( $outleft \) and \( $outright \)
+$BR
+\( $invar \) between \( $inright \) and \( $inleft \).
 $ECENTER
 $PAR
 \( V = \) \{ ans_rule(15) \} .
@@ -182,14 +169,12 @@ ANS( Compute($volume)->cmp() );
 
 BEGIN_HINT
 $BR
-From the given boundaries,
-\[$midleft \le $midvar \le $midright \]
-Determine similar inequalities for \( $invar \) and \($outvar \).
-
+For the given boundary equations, choose 
+\[dV = d$invar d$midvar d$outvar \]
+Plug in the given limits of integration correspondingly.
 $PAR
 
 END_HINT
-
 
 BEGIN_SOLUTION
 $PAR

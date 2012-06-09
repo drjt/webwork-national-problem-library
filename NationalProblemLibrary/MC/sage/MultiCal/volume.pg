@@ -60,7 +60,7 @@ $showHint = 3;
 
 TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
-<div id="singlecell-test">
+<div id="sagecell">
 <script type="text/code">
  
 # Sage Python Code
@@ -81,10 +81,10 @@ def _(
     dV = selector(['dz dy dx','dz dx dy','dx dy dz','dx dz dy','dy dx dz','dy dz dx'],buttons=False,label='\({dV=}\)'),
     a1=input_box(0,label='\(a_{1}=\)',width=5),
     a2=input_box(2,label='\(a_{2}=\)',width=5),
-    b1=input_box((4-x^2),label='\(b_{1}=\)',width=10),
-    b2=input_box((4+x),label='\(b_{2}=\)',width=10),
-    c1=input_box(-x,label='\(c_{1}=\)',width=15),
-    c2=input_box(x+y,label='\(c_{2}=\)',width=15)):
+    b1=input_box(0,label='\(b_{1}=\)',width=10),
+    b2=input_box(2,label='\(b_{2}=\)',width=10),
+    c1=input_box(0,label='\(c_{1}=\)',width=15),
+    c2=input_box(2,label='\(c_{2}=\)',width=15)):
 
     b1 = b1 + 0*x
     b2 = b2 + 0*x
@@ -128,33 +128,23 @@ SAGE_CODE
 
 TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
-<script type="text/javascript">
+<script src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 
-$(function() { // load only when the page is loaded
-  var makecells = function() {
-  sagecell.makeSagecell({
-      inputLocation: "#singlecell-test",
-      editor: "codemirror",
-      hide: ["editor","computationID","files","messages","sageMode"],
-      evalButtonText: "Start/Restart",
-      replaceOutput: true});
-  }
-
-  sagecell.init(makecells); // load Single Cell libraries and then
-                              // initialize Single Cell instances
-
-  });
+<script>
+$(function () {
+   sagecell.makeSagecell({inputLocation:  '#sagecell',
+                          template:       sagecell.templates.minimal,
+                          autoeval:        true, 
+                          evalButtonText: 'Start/Restart'});
+});
 </script>
+
 
 SAGE_SCRIPT
 
 
 TEXT(MODES(TeX =>"",HTML=>EV3(<<'EOT')));
-$BBOLD
-To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has problems which don't allow the interactive cell to function but IE9 appears to work.
-$EBOLD
 
 $PAR
 Using the interactive tool above, determine the order of integration and endpoints that give the volume of the region bounded by:

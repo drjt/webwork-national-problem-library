@@ -75,7 +75,7 @@ $saddles = List( $pt1 );
 
 TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
-<div id="singlecell-test">
+<div id="sagecell">
 <script type="text/code">
 
 var('x,y,t,z')
@@ -84,10 +84,16 @@ f(x,y)=$fin
 
 r = 3.7   # for a nice plot range
 
-~~@interact(layout=dict(bottom=[["x0","y0","threeD"]]))
+~~@interact(layout=dict(bottom=[["x0","y0","threeD","nojavagraph"]]))
 def _(x0 =input_box(0,width=5,label="\( {x = }\)"), 
     y0=input_box(0,width=5,label="\( {y = }\)"),
-    threeD=checkbox(false,label="Show 3D surface?")):
+    threeD=checkbox(false,label="Show 3D surface?"), 
+    nojavagraph=checkbox(default=false,label='Problems with 3D Graph?')):
+    
+    if nojavagraph:
+        view_method = "tachyon"
+    else:
+        view_method = "jmol"
 
     picture2d = contour_plot(f(x,y),(x,-r,r),(y,-r,r),contours=100,plot_points=50,cmap='Blues') 
     picture2d += point((x0,y0),size=50,zorder=2,color="red") 
@@ -109,7 +115,7 @@ def _(x0 =input_box(0,width=5,label="\( {x = }\)"),
     if threeD:
         picture3d = plot3d(f, (x,-r,r),(y,-r,r),opacity=0.5)
         picture3d += point3d((x0,y0,f(x0,y0)),size=20,color="red")        
-        picture3d.show(frame=False)
+        picture3d.show(frame=False,viewer=view_method)
     else:
 #  These are the exact solutions...can print them out for students if desired
 #        picture2d += point(pt1,size=10,zorder=2,color="green") 
@@ -125,32 +131,22 @@ SAGE_CODE
 
 TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
-<script type="text/javascript">
+<script src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 
-$(function() { // load only when the page is loaded
-  var makecells = function() {
-  sagecell.makeSagecell({
-      inputLocation: "#singlecell-test",
-      editor: "codemirror",
-      hide: ["editor","computationID","files","messages","sageMode"],
-      evalButtonText: "Start/Restart",
-      replaceOutput: true});
-  }
-
-  sagecell.init(makecells); // load Single Cell libraries and then
-                              // initialize Single Cell instances
-
-  });
+<script>
+$(function () {
+   sagecell.makeSagecell({inputLocation:  '#sagecell',
+                          template:       sagecell.templates.minimal,
+                          autoeval:        true, 
+                          evalButtonText: 'Start/Restart'});
+});
 </script>
+
 
 SAGE_SCRIPT
 
 TEXT(MODES(TeX =>"",HTML=>EV3(<<'EOT')));
-$BBOLD
-To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has problems which don't allow the interactive cell to function but IE9 appears to work.
-$EBOLD
 
 $PAR
 A contour plot for \( z = f(x,y) \) is illustrated  Using the graph, determine the location of all extreme and saddle points.  

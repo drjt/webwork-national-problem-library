@@ -79,7 +79,7 @@ $ans6 = Compute("$c3");
 
 TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
-<div id="singlecell-test"><script type="text/code">
+<div id="sagecell"><script type="text/code">
 
 #  Starting point for radius values before collapsing in as R approaches 0.
 #  Functions ought to be "reasonable" within a circular domain of radius R surrounding 
@@ -89,12 +89,20 @@ Rmin=1/10
 Rmax=2
 
 ~~@interact(layout=dict(top=[["num"]], 
-right=[["in_3d"],["curves"]],
+right=[["in_3d"],["curves"],["nojavagraph"]],
 bottom=[["R"]]))
-def _(num=selector(["f1","f2","f3","f4","f5","f6"],label="\( {f(x,y)= }\)"),
+def _(num=selector(["f1","f2","f3","f4","f5","f6"],label='\( f  =  \)'),
     R=slider(Rmin,Rmax,1/10,Rmax,label='\(R\)'),
     curves=checkbox(default=false,label='Show curves'),
-    in_3d=checkbox(default=false,label='3D')):
+    in_3d=checkbox(default=false,label='3D'),
+    nojavagraph=checkbox(default=false,label='Problems with 3D Graph?')):
+    
+    if nojavagraph:
+        view_method = "tachyon"
+    else:
+        view_method = "jmol"
+
+#  Other options java3d (which uses OpenGL) and canvas3d (which uses JavaScript)
 
     if num=="f1":
         f(x,y) = $f1
@@ -119,7 +127,7 @@ def _(num=selector(["f1","f2","f3","f4","f5","f6"],label="\( {f(x,y)= }\)"),
     g(r,t) = f(x=r*cos(t)+x0,y=r*sin(t)+y0)
 #   Sage graphing transformation used to see the original surface.
     cylinder = (r*cos(t)+x0,r*sin(t)+y0,z)
-    surface = plot3d(g,(t,0,2*pi),(r,1/100,Rmax),transformation=cylinder,opacity=0.2)
+    surface = plot3d(g,(t,0,2*pi),(r,1/100,Rmax),transformation=cylinder,opacity=0.6)
 #   Regraph the surface for smaller and smaller radii controlled by the slider.
     collapsing_surface = plot3d(g,(t,0,2*pi),(r,1/100,R),transformation=cylinder,rgbcolor=(0,1,0))
     
@@ -150,33 +158,25 @@ def _(num=selector(["f1","f2","f3","f4","f5","f6"],label="\( {f(x,y)= }\)"),
         html('\n<center><font color="red">\(\lim_{(x,?)\\rightarrow(x_0,y_0)} f(x,y) =%s\)</font>'%str(limit_x)+'  and <font color="red">\(\lim_{(?,y)\\rightarrow(x_0,y_0)} f(x,y) =%s\)</font></center>'%str(limit_y))
         
     if in_3d:
-        show(G,stereo="redcyan")
+        show(G,stereo="redcyan",viewer=view_method)
     else:
-        show(G,perspective_depth=true)
+        show(G,perspective_depth=true,viewer=view_method)
 </script></div>
 
 SAGE_CODE
 
 TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
-<script type="text/javascript">
+<script src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 
-$(function() { // load only when the page is loaded
-  var makecells = function() {
-  sagecell.makeSagecell({
-      inputLocation: "#singlecell-test",
-      editor: "codemirror",
-      hide: ["editor","computationID","files","messages","sageMode"],
-      evalButtonText: "Start/Restart",
-      replaceOutput: true});
-  }
-
-  sagecell.init(makecells); // load Single Cell libraries and then
-                              // initialize Single Cell instances
-
-  });
+<script>
+$(function () {
+   sagecell.makeSagecell({inputLocation:  '#sagecell',
+                          template:       sagecell.templates.minimal,
+                          autoeval:        true, 
+                          evalButtonText: 'Start/Restart'});
+});
 </script>
 
 SAGE_SCRIPT
@@ -184,10 +184,7 @@ SAGE_SCRIPT
 TEXT(beginproblem());
 
 TEXT(MODES(TeX =>"",HTML=>EV3(<<'EOT')));
-$BBOLD
-To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has an issue
-which causes a failure.
-$EBOLD
+
 $PAR
 
 Determining 

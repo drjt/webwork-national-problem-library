@@ -63,7 +63,7 @@ if ($angle_perp >pi) {
 
 TEXT(MODES(TeX=>"", HTML=><<SAGE_CODE));
 
-<div id="singlecell-test">
+<div id="sagecell">
 <script type="text/code">
 
 var('x,y,t,z')
@@ -119,32 +119,23 @@ SAGE_CODE
 
 TEXT(MODES(TeX=>"", HTML=><<'SAGE_SCRIPT'));
 
-<script type="text/javascript" src="http://aleph.sagemath.org/static/jquery.min.js"></script>
-<script type="text/javascript" src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
-<script type="text/javascript">
+<script src="http://aleph.sagemath.org/static/jquery.min.js"></script>
+<script src="http://aleph.sagemath.org/embedded_sagecell.js"></script>
 
-$(function() { // load only when the page is loaded
-  var makecells = function() {
-  sagecell.makeSagecell({
-      inputLocation: "#singlecell-test",
-      editor: "codemirror",
-      hide: ["editor","computationID","files","messages","sageMode"],
-      evalButtonText: "Start/Restart",
-      replaceOutput: true});
-  }
-
-  sagecell.init(makecells); // load Single Cell libraries and then
-                              // initialize Single Cell instances
-
-  });
+<script>
+$(function () {
+   sagecell.makeSagecell({inputLocation:  '#sagecell',
+                          template:       sagecell.templates.minimal,
+                          autoeval:        true, 
+                          evalButtonText: 'Start/Restart'});
+});
 </script>
+
 
 SAGE_SCRIPT
 
 TEXT(MODES(TeX =>"",HTML=>EV3(<<'EOT')));
-$BBOLD
-To work these interactive problems, for now you will need to use the Firefox browser, the Google Chrome browser or Safari.  Internet Explorer 8 has problems which don't allow the interactive cell to function but IE9 appears to work.
-$EBOLD
+
 $PAR
  
 A contour plot for \( z = f(x,y) \) is illustrated with normal vector in orange.  Using the interactive controls, determine the smallest positive angle for which the directional derivative is zero at the point 
